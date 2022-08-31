@@ -2,7 +2,7 @@ import {
   IRegisteredSchemaOptions,
   IValidationSchemaOptions,
   ValidationOptionsType
-} from '../interfaces';
+} from '../types';
 import { Type } from '@nestjs/common';
 
 export class ValidationSchemasStorage {

@@ -1,4 +1,4 @@
-import { ValidationSchemaClass, ValidatorType } from '../interfaces';
+import { ValidationSchemaClass, ValidatorType } from '../types';
 
 export class ValidatorsStorage {
   private static _storage: Map<ValidationSchemaClass, ValidatorType> = new Map();

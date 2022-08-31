@@ -8,7 +8,7 @@ import {
 } from './module.declaration';
 import FastestValidator from 'fastest-validator';
 import { ValidationSchemasStorage, ValidatorsStorage } from './storages';
-import { ValidatorType } from './interfaces';
+import { ValidatorType } from './types';
 
 // TODO - Readme
 @Module({})

@@ -1,5 +1,5 @@
 import { ValidationRuleObject } from 'fastest-validator';
-import { ValidationOptionsType, ValidationSchemaClass } from '../interfaces';
+import { ValidationOptionsType, ValidationSchemaClass } from '../types';
 import { ValidationSchemasStorage } from '../storages';
 
 export function decoratorFactory<T extends ValidationOptionsType>(defaults: ValidationOptionsType) {
