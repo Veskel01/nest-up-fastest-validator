@@ -10,6 +10,7 @@ import FastestValidator from 'fastest-validator';
 import { ValidationSchemasStorage, ValidatorsStorage } from './storages';
 import { ValidatorType } from './interfaces';
 
+// TODO - Readme
 @Module({})
 export class NestFastestValidatorModule extends ConfigurableModuleClass {
   public static forRoot(options: typeof OPTIONS_TYPE = {}): DynamicModule {
@@ -55,14 +56,12 @@ export class NestFastestValidatorModule extends ConfigurableModuleClass {
   private static _createFastestValidatorProvider(): Provider {
     return {
       provide: FASTEST_VALIDATOR_TOKEN,
-      useFactory: ({
-        validatorOptions = {},
-        aliases = []
-      }: typeof OPTIONS_TYPE): FastestValidator => {
+      useFactory: ({ validatorOptions = {} }: typeof OPTIONS_TYPE): FastestValidator => {
         const validator = new FastestValidator(validatorOptions);
-        aliases.forEach((alias) => {
-          validator.alias(alias.name, alias.validationRule);
+        Object.entries(validatorOptions.aliases || {}).forEach(([alias, aliasValidationRules]) => {
+          validator.alias(alias, aliasValidationRules);
         });
+
         return validator;
       },
       inject: [MODULE_OPTIONS_TOKEN]
