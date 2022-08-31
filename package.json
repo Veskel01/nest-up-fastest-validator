@@ -1,6 +1,6 @@
 {
   "name": "@nest-up/nest-fastest-validator",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Custom Nest.js wrapper package for fastest-validator",
   "author": "Jakub Andrzejewski (Veskel01)",
   "license": "MIT",
@@ -87,5 +87,13 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Veskel01/nest-up-fastest-validator.git"
+  },
+  "homepage": "https://github.com/Veskel01/nest-up-fastest-validator.git#readme",
+  "bugs": {
+    "url": "https://github.com/Veskel01/nest-up-fastest-validator/issues"
   }
 }
