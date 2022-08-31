@@ -56,7 +56,7 @@ export class NestFastestValidatorModule extends ConfigurableModuleClass {
   private static _createFastestValidatorProvider(): Provider {
     return {
       provide: FASTEST_VALIDATOR_TOKEN,
-      useFactory: ({ validatorOptions = {} }: typeof OPTIONS_TYPE): FastestValidator => {
+      useFactory: (validatorOptions: typeof OPTIONS_TYPE = {}): FastestValidator => {
         const validator = new FastestValidator(validatorOptions);
         Object.entries(validatorOptions.aliases || {}).forEach(([alias, aliasValidationRules]) => {
           validator.alias(alias, aliasValidationRules);
