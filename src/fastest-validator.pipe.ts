@@ -7,19 +7,21 @@ import {
   PipeTransform
 } from '@nestjs/common';
 import { ValidationError } from 'fastest-validator';
-import { ValidatorsStorage } from '../storages';
+import { ValidatorsStorage } from './storages';
 import { plainToClass, ClassTransformOptions } from 'class-transformer';
 
 interface IFastestValidationPipeOptions {
   httpErrorStatusCode: HttpStatus | number;
   exceptionFactory: (errors: ValidationError[]) => unknown | Promise<unknown>;
-  disableErrorMessages: boolean;
+  disableValidationErrorMessages: boolean;
   transformToClass: boolean;
   transformOptions: ClassTransformOptions;
+  customErrorMessage: string;
 }
 
 interface IErrorResponse {
   statusCode: number;
+  error: string;
   messages?: Array<{ field: string; message: string }>;
 }
 
@@ -27,21 +29,22 @@ interface IErrorResponse {
 export class FastestValidatorPipe implements PipeTransform {
   private readonly httpErrorStatusCode: HttpStatus | number;
   private readonly _exceptionFactory: (errors: ValidationError[]) => unknown | Promise<unknown>;
-  private readonly _disableErrorMessages: boolean;
+  private readonly _disableValidationErrorMessages: boolean;
   private readonly _transformToClass: boolean;
   private readonly _transformOptions: ClassTransformOptions;
-  private readonly _defaultErrorMessage = 'Validation failed';
+  private readonly _defaultErrorMessage: string;
 
   constructor(@Optional() options: Partial<IFastestValidationPipeOptions> = {}) {
     this.httpErrorStatusCode = options.httpErrorStatusCode || HttpStatus.UNPROCESSABLE_ENTITY;
     this._exceptionFactory = options.exceptionFactory || this._createExceptionFactory();
-    this._disableErrorMessages = options.disableErrorMessages || false;
+    this._disableValidationErrorMessages = options.disableValidationErrorMessages || false;
     this._transformToClass = options.transformToClass || false;
     this._transformOptions = options.transformOptions || {};
+    this._defaultErrorMessage = options.customErrorMessage || 'Validation failed';
   }
 
   public async transform(value: unknown, { metatype }: ArgumentMetadata): Promise<unknown> {
-    if (!metatype) {
+    if (!metatype || !this._isToValidate(metatype)) {
       return value;
     }
 
@@ -52,7 +55,7 @@ export class FastestValidatorPipe implements PipeTransform {
 
     const validationErrors = await validateFn(value);
 
-    if (validationErrors !== true && validationErrors.length > 0) {
+    if (Array.isArray(validationErrors) && validationErrors.length > 0) {
       throw this._exceptionFactory(validationErrors);
     }
 
@@ -73,14 +76,20 @@ export class FastestValidatorPipe implements PipeTransform {
     };
   }
 
+  private _isToValidate(metatype: Function): boolean {
+    const forbiddenTypes: Function[] = [String, Boolean, Number, Array, Object];
+    return !forbiddenTypes.includes(metatype);
+  }
+
   private _parseErrorResponse(errors: ValidationError[]): IErrorResponse {
-    const messages = errors.map(({ message = this._defaultErrorMessage, field }) => ({
+    const messages = errors.map(({ message = '', field }) => ({
       field,
       message
     }));
     return {
       statusCode: this.httpErrorStatusCode,
-      ...(!this._disableErrorMessages
+      error: this._defaultErrorMessage,
+      ...(!this._disableValidationErrorMessages
         ? {
             messages
           }

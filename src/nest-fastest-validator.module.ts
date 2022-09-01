@@ -1,5 +1,5 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { FASTEST_VALIDATOR_TOKEN, getValidatorToken } from './injection-tokens';
+import { FASTEST_VALIDATOR_TOKEN } from './injection-tokens';
 import {
   ASYNC_OPTIONS_TYPE,
   ConfigurableModuleClass,
@@ -8,49 +8,27 @@ import {
 } from './module.declaration';
 import FastestValidator from 'fastest-validator';
 import { ValidationSchemasStorage, ValidatorsStorage } from './storages';
-import { ValidatorType } from './types';
 
-// TODO - Readme
 @Module({})
 export class NestFastestValidatorModule extends ConfigurableModuleClass {
   public static forRoot(options: typeof OPTIONS_TYPE = {}): DynamicModule {
     const { providers, ...rest } = super.forRoot(options);
     const validatorProvider = this._createFastestValidatorProvider();
-    const validatorsProviders = this._createValidatorsProvider();
     return {
       ...rest,
-      providers: [...(providers || []), validatorProvider, ...validatorsProviders]
+      providers: [...(providers || []), validatorProvider],
+      global: true
     };
   }
 
   public static forRootAsync(options: typeof ASYNC_OPTIONS_TYPE = {}): DynamicModule {
     const { providers, ...rest } = super.forRootAsync(options);
     const validatorProvider = this._createFastestValidatorProvider();
-    const validatorsProviders = this._createValidatorsProvider();
     return {
       ...rest,
-      providers: [...(providers || []), validatorProvider, ...validatorsProviders]
+      providers: [...(providers || []), validatorProvider],
+      global: true
     };
-  }
-
-  private static _createValidatorsProvider(): Provider[] {
-    const registeredSchemas = ValidationSchemasStorage.getAllSchemas();
-    const validatorProviders = Object.values(registeredSchemas).map(
-      ({ metatype, schemaShape }): Provider => ({
-        provide: getValidatorToken(metatype),
-        useFactory: (fastestValidator: FastestValidator): ValidatorType => {
-          const validator = fastestValidator.compile({
-            ...schemaShape.validationSchemaOptions,
-            ...schemaShape.properties
-          });
-          ValidatorsStorage.addNewValidator(metatype, validator);
-          return validator;
-        },
-        inject: [FASTEST_VALIDATOR_TOKEN]
-      })
-    );
-    ValidationSchemasStorage.clear();
-    return validatorProviders;
   }
 
   private static _createFastestValidatorProvider(): Provider {
@@ -58,13 +36,25 @@ export class NestFastestValidatorModule extends ConfigurableModuleClass {
       provide: FASTEST_VALIDATOR_TOKEN,
       useFactory: (validatorOptions: typeof OPTIONS_TYPE = {}): FastestValidator => {
         const validator = new FastestValidator(validatorOptions);
+        this._loadValidators(validator);
         Object.entries(validatorOptions.aliases || {}).forEach(([alias, aliasValidationRules]) => {
           validator.alias(alias, aliasValidationRules);
         });
-
         return validator;
       },
       inject: [MODULE_OPTIONS_TOKEN]
     };
+  }
+
+  private static _loadValidators(fastestValidator: FastestValidator): void {
+    const registeredSchemas = ValidationSchemasStorage.getAllSchemas();
+    Object.values(registeredSchemas).forEach(({ metatype, schemaShape }): void => {
+      const validator = fastestValidator.compile({
+        ...schemaShape.validationSchemaOptions,
+        ...schemaShape.properties
+      });
+      ValidatorsStorage.addNewValidator(metatype, validator);
+    });
+    ValidationSchemasStorage.clear();
   }
 }

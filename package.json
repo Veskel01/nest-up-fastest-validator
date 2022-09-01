@@ -31,10 +31,8 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "prepublish:npm": "npm run build",
     "publish:npm": "npm publish --access public",
-    "test:e2e:dev": "jest --config ./tests/jest-e2e.json --watch"
-  },
-  "dependencies": {
-    "@nestjs/platform-express": "^9.0.0"
+    "test:e2e:dev": "jest --config ./tests/jest-e2e.json --watch",
+    "debug": "nest start --watch --debug"
   },
   "devDependencies": {
     "@nestjs/common": "9.0.11",
@@ -66,10 +64,10 @@
   "peerDependencies": {
     "@nestjs/common": "^8.0.0 || ^9.0.0",
     "@nestjs/core": "^8.0.0 || ^9.0.0",
-    "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.5.6",
+    "class-transformer": "^0.5.1",
     "fastest-validator": "^1.15.0",
-    "class-transformer": "^0.5.1"
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.5.6"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -95,5 +93,8 @@
   "homepage": "https://github.com/Veskel01/nest-up-fastest-validator.git#readme",
   "bugs": {
     "url": "https://github.com/Veskel01/nest-up-fastest-validator/issues"
+  },
+  "dependencies": {
+    "@nestjs/platform-express": "^9.0.11"
   }
 }
