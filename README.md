@@ -131,7 +131,7 @@ Now if we send request with invalid body properties - the following error will b
 }
 ```
 
-Of coures you can configure `FastestValidatorPipe` options:
+Of course you can can configure `FastestValidatorPipe` options:
 
 ```typescript
 @UsePipes(
