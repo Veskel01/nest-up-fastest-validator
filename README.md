@@ -5,7 +5,7 @@ Fastest-Validator module for Nest.JS based on the fastest-validator package.
 ## Installation
 
 ```bash
-$ npm install @nest-up/nest-fastest-validator fastest-validator
+$ npm install @nest-up/nest-fastest-validator fastest-validator class-transformer
 ```
 
 ## Usage
