@@ -47,9 +47,10 @@ export class ValidationSchemasStorage {
     propertyName: string,
     validationOptions: ValidationOptionsType
   ): void {
-    if (typeof validationOptions !== 'object' || !Array.isArray(validationOptions)) {
+    if (typeof validationOptions !== 'object') {
       throw new Error(`Validation options must be an object or array (if decorator is @Multi)`);
     }
+
     const registeredSchema = this._schemas.get(schema.name);
     if (registeredSchema) {
       registeredSchema.schemaShape.properties[propertyName] = validationOptions;

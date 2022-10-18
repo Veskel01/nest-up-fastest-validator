@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { ValidationError } from 'fastest-validator';
 import { ValidatorsStorage } from './storages';
-import { plainToClass, ClassTransformOptions } from 'class-transformer';
+import { plainToInstance, ClassTransformOptions } from 'class-transformer';
 
 interface IFastestValidationPipeOptions {
   httpErrorStatusCode: HttpStatus | number;
@@ -60,7 +60,7 @@ export class FastestValidatorPipe implements PipeTransform {
     }
 
     if (this._transformToClass) {
-      const entity = plainToClass(metatype, value, this._transformOptions);
+      const entity = plainToInstance(metatype, value, this._transformOptions);
       if (entity.constructor !== metatype) {
         entity.constructor = metatype;
       }
