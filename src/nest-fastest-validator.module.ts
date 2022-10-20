@@ -7,7 +7,7 @@ import {
 } from './module.declaration';
 import FastestValidator from 'fastest-validator';
 import { ValidationSchemasStorage, ValidatorsStorage } from './storages';
-import { FASTEST_VALIDATOR_TOKEN } from './constants';
+import { FASTEST_VALIDATOR_TOKEN } from './injection-tokens';
 
 @Module({})
 export class NestFastestValidatorModule extends ConfigurableModuleClass {
