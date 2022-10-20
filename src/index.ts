@@ -1,6 +1,6 @@
 export * from './decorators';
 export * from './types';
-export * from './injection-tokens';
+export * from './constants';
 
 import { decoratorFactory } from './helpers/decorator-factory.helper';
 import { FastestValidatorPipe } from './fastest-validator.pipe';
