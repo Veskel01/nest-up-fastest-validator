@@ -10,7 +10,7 @@ Changes in version 2.0.0:
 2. Now you can extend classes with `@ValidationSchema()` decorator - properies will be inherited
 3. `Validator` class for manual validation in services, controllers etc. To use it, inject `Validator` class in your class constructor `@InjectValidator(ValidationSchema)` and use `validate()`, `validateSync()` or `validateReactive()` method.
 4. You can inject root `FastestValidator` class in your class constructor. Just use `@InjectFastestValidator()` decorator
-5. Now instead function `decoratorFactory` you can use `create` in `FactoryDecorator` class. It's the same, but you can use it in your own decorators.
+5. Now instead function `decoratorFactory` you can use `create` method in `FactoryDecorator` class. It's the same, but you can use it to create your own decorators.
 
 ## Installation
 
