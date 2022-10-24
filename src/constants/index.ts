@@ -1,1 +1,1 @@
-export * from './lib.constants';
+export * from './schema-watermark.constant';

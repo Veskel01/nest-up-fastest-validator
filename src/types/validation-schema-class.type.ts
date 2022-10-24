@@ -1,3 +1,3 @@
 import { Type } from '@nestjs/common';
 
-export type ValidationSchemaClass = Type;
+export type TValidationSchemaClass = Type;

@@ -2,6 +2,16 @@
 
 Fastest-Validator module for Nest.JS based on the fastest-validator package.
 
+## Version 2.0.0
+
+Changes in version 2.0.0:
+
+1. New decorator `@Shorthand()` - for shorthand validation e.g. `@Shorthand('string | min:6 | max:32')`
+2. Now you can extend classes with `@ValidationSchema()` decorator - properies will be inherited
+3. `Validator` class for manual validation in services, controllers etc. To use it, inject `Validator` class in your class constructor `@InjectValidator(ValidationSchema)` and use `validate()`, `validateSync()` or `validateReactive()` method.
+4. You can inject root `FastestValidator` class in your class constructor. Just use `@InjectFastestValidator()` decorator
+5. Now instead function `decoratorFactory` you can use `create` in `FactoryDecorator` class. It's the same, but you can use it in your own decorators.
+
 ## Installation
 
 ```bash
@@ -15,7 +25,7 @@ Only import the NestFastestValidatorModule in your app root module:
 ```typescript
 @Module({
   imports: [
-    NestFastestValidatorModule.forRoot({
+    FastestValidatorModule.forRoot({
       useNewCustomCheckerFunction: true
     })
   ]
@@ -30,7 +40,7 @@ class AppModule {}
 ```typescript
 @Module({
   imports: [
-    NestFastestValidatorModule.forRootAsync({
+    FastestValidatorModule.forRootAsync({
       useFactory: () => ({
         useNewCustomCheckerFunction: true
       })
@@ -44,8 +54,8 @@ class AppModule {}
 
 ```typescript
 @Injectable()
-class FastestValidatorConfig implements INestFastestValidatorModuleOptionsFactory {
-  public createFastestValidatorModuleOptions(): ValidatorConstructorOptions {
+class FastestValidatorConfig implements IFastestValidatorModuleOptionsFactory {
+  public createFastestValidatorModuleOptions(): TFastestValidatorModuleOptions {
     return {
       useNewCustomCheckerFunction: true
     };
@@ -56,7 +66,7 @@ class FastestValidatorConfig implements INestFastestValidatorModuleOptionsFactor
 ```typescript
 @Module({
   imports: [
-    NestFastestValidatorModule.forRootAsync({
+    FastestValidatorModule.forRootAsync({
       useClass: FastestValidatorConfig
     })
   ]
@@ -73,11 +83,7 @@ After module configuration you can define your validation schemas:
 ```typescript
 @ValidationSchema()
 class ProductDTO {
-  @String({
-    min: 3,
-    max: 25,
-    empty: false
-  })
+  @Shorthand('string | min:2 | max:10 ')
   public name: string;
 
   @Number({
@@ -90,6 +96,9 @@ class ProductDTO {
     nullable: false
   })
   public createdAt: Date;
+
+  @Shorthand('string[]')
+  public tags: string[];
 }
 ```
 
@@ -112,7 +121,7 @@ Now if we send request with invalid body properties - the following error will b
 
 ```json
 {
-  "statusCode": 422,
+  "statusCode": 400,
   "error": "Validation failed",
   "messages": [
     {
@@ -128,6 +137,21 @@ Now if we send request with invalid body properties - the following error will b
       "message": "The 'createdAt' field is required."
     }
   ]
+}
+```
+
+We can also inject validator class to our controller and use it to validate our data:
+
+```typescript
+@Controller('/products')
+class ProductsController {
+  constructor(@InjectValidator(ProductDTO) private readonly validator: Validator) {}
+
+  @Post('/create')
+  public createNewProduct(@Body() productDTO: ProductDTO) {
+    this.validator.validate(productDTO);
+    /// ...
+  }
 }
 ```
 

@@ -1,14 +1,23 @@
-import { ValidationSchemaClass, ValidatorType } from '../types';
+import { TValidationSchemaClass, TValidateFunction } from '../types';
 
 export class ValidatorsStorage {
-  private static _storage: Map<ValidationSchemaClass, ValidatorType> = new Map();
+  private static _storage: Map<TValidationSchemaClass, TValidateFunction> = new Map();
 
-  public static addNewValidator(schema: ValidationSchemaClass, validator: ValidatorType): void {
+  public static addNew(schema: TValidationSchemaClass, validator: TValidateFunction): void {
     this._storage.set(schema, validator);
   }
 
-  public static getValidateFunction(schema: ValidationSchemaClass): ValidatorType | null {
-    const validator = this._storage.get(schema);
-    return validator || null;
+  public static getAll(): Array<{
+    schema: TValidationSchemaClass;
+    validator: TValidateFunction;
+  }> {
+    return Array.from(this._storage.entries()).map(([schema, validator]) => ({
+      schema,
+      validator
+    }));
+  }
+
+  public static getSingle(schema: TValidationSchemaClass): TValidateFunction | null {
+    return this._storage.get(schema) || null;
   }
 }

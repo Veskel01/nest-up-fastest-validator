@@ -1,7 +1,7 @@
-import { NestFastestValidatorModuleOptions } from './module-options.type';
+import { TFastestValidatorModuleOptions } from './module-options.type';
 
-export interface INestFastestValidatorModuleOptionsFactory {
+export interface IFastestValidatorModuleOptionsFactory {
   createFastestValidatorModuleOptions():
-    | NestFastestValidatorModuleOptions
-    | Promise<NestFastestValidatorModuleOptions>;
+    | TFastestValidatorModuleOptions
+    | Promise<TFastestValidatorModuleOptions>;
 }

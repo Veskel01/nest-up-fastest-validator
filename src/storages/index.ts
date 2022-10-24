@@ -1,4 +1,4 @@
-import { ValidationSchemasStorage } from './validation-schemas.storage';
+import { SchemaStorage } from './schema.storage';
 import { ValidatorsStorage } from './validators.storage';
 
-export { ValidationSchemasStorage, ValidatorsStorage };
+export { SchemaStorage, ValidatorsStorage };

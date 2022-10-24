@@ -5,13 +5,13 @@ import {
   ValidationSchema
 } from 'fastest-validator';
 
-export type ValidationOptionsType = Partial<ValidationRuleObject>;
-
-export type ValidatorType = SyncCheckFunction | AsyncCheckFunction;
+export type TValidateFunction = SyncCheckFunction | AsyncCheckFunction;
 
 export interface IValidationSchemaOptions extends ValidationSchema {}
 
+export type TValidationRules = Partial<ValidationRuleObject> | string;
+
 export interface IValidationSchemaShape {
-  validationSchemaOptions: IValidationSchemaOptions;
-  properties: Record<string, ValidationOptionsType>;
+  schemaOptions: IValidationSchemaOptions;
+  registeredPropertiesWithRules: Record<string, TValidationRules>;
 }

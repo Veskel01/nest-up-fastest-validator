@@ -1,9 +1,10 @@
-import { Type } from '@nestjs/common';
-import { IValidationSchemaOptions } from '../types';
-import { ValidationSchemasStorage } from '../storages';
+import { IValidationSchemaOptions, TValidationSchemaClass } from '../types';
+import { SchemaStorage } from '../storages';
+import { SCHEMA_WATERMARK } from '../constants';
 
 export function ValidationSchema(schemaOptions: IValidationSchemaOptions = {}): ClassDecorator {
   return (target) => {
-    ValidationSchemasStorage.registerNewSchema(target as unknown as Type, schemaOptions);
+    SchemaStorage.addNew(target as unknown as TValidationSchemaClass, schemaOptions);
+    Reflect.defineMetadata(SCHEMA_WATERMARK, true, target);
   };
 }

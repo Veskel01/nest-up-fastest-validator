@@ -35,7 +35,7 @@ export class FastestValidatorPipe implements PipeTransform {
   private readonly _defaultErrorMessage: string;
 
   constructor(@Optional() options: Partial<IFastestValidationPipeOptions> = {}) {
-    this.httpErrorStatusCode = options.httpErrorStatusCode || HttpStatus.UNPROCESSABLE_ENTITY;
+    this.httpErrorStatusCode = options.httpErrorStatusCode || HttpStatus.BAD_REQUEST;
     this._exceptionFactory = options.exceptionFactory || this._createExceptionFactory();
     this._disableValidationErrorMessages = options.disableValidationErrorMessages || false;
     this._transformToClass = options.transformToClass || false;
@@ -43,12 +43,13 @@ export class FastestValidatorPipe implements PipeTransform {
     this._defaultErrorMessage = options.customErrorMessage || 'Validation failed';
   }
 
-  public async transform(value: unknown, { metatype }: ArgumentMetadata): Promise<unknown> {
-    if (!metatype || !this._isToValidate(metatype)) {
+  public async transform(value: unknown, { metatype: schema }: ArgumentMetadata): Promise<unknown> {
+    if (!schema || !this._isToValidate(schema)) {
       return value;
     }
 
-    const validateFn = ValidatorsStorage.getValidateFunction(metatype);
+    const validateFn = ValidatorsStorage.getSingle(schema);
+
     if (!validateFn) {
       return value;
     }
@@ -60,9 +61,9 @@ export class FastestValidatorPipe implements PipeTransform {
     }
 
     if (this._transformToClass) {
-      const entity = plainToInstance(metatype, value, this._transformOptions);
-      if (entity.constructor !== metatype) {
-        entity.constructor = metatype;
+      const entity = plainToInstance(schema, value, this._transformOptions);
+      if (entity.constructor !== schema) {
+        entity.constructor = schema;
       }
       return entity;
     }

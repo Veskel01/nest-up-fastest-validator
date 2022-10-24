@@ -1,9 +1,10 @@
-export * from './decorators';
 export * from './types';
-export * from './constants';
+export * from './decorators';
+export * from './factories';
+export * from './injection-tokens';
 
-import { decoratorFactory } from './helpers/decorator-factory.helper';
 import { FastestValidatorPipe } from './fastest-validator.pipe';
-import { NestFastestValidatorModule } from './nest-fastest-validator.module';
+import { FastestValidatorModule } from './validator.module';
+import { Validator } from './validator';
 
-export { FastestValidatorPipe, NestFastestValidatorModule, decoratorFactory };
+export { FastestValidatorPipe, FastestValidatorModule, Validator };
