@@ -2,8 +2,10 @@
 
 Fastest-Validator module for Nest.JS based on the fastest-validator package.
 
-> **Warning**
-> This package is deprecated and will be removed. Use this instead: https://www.npmjs.com/package/@fizbix/nest-fastest-validator
+
+## Deprecated
+
+- This package is deprecated and will be removed. Use this instead: https://www.npmjs.com/package/@fizbix/nest-fastest-validator
 
 ## Version 2.0.0
 
